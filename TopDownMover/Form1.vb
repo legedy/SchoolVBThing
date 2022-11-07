@@ -7,6 +7,16 @@ Public Class Form1
     Private Property Speed As Integer = 10
     Public Property Velocity As Vector2 = New Vector2(0, 0)
 
+    Private Function Clamp(val As Integer, outerBound As Integer, innerBound As Integer) As Integer
+        Dim newVal As Integer = If(val > 0, 0, val)
+
+        If newVal + outerBound < innerBound Then
+            newVal = innerBound - outerBound
+        End If
+
+        Return newVal
+    End Function
+
     Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         Dim Forward As Integer = If(GetAsyncKeyState(Convert.ToInt32(Keys.W)), 1, 0)
         Dim Backward As Integer = If(GetAsyncKeyState(Convert.ToInt32(Keys.S)), 1, 0)
@@ -17,10 +27,10 @@ Public Class Form1
 
         Velocity = Velocity.Lerp(InputVector.Mult(Speed), 0.15)
 
-        PictureBox1.Top = Math.Min(Math.Max(PictureBox1.Top + Velocity.Y, 0), Me.Size.Height)
-        PictureBox1.Left = Math.Min(Math.Max(PictureBox1.Left + Velocity.X, 0), Me.Size.Width)
-
-        Debug.Print(Me.Size.Width)
+        PictureBox1.Location = New Point(
+            Math.Min(Math.Max(PictureBox1.Location.X + Velocity.X, 0), Me.Size.Width - (PictureBox1.Size.Width * 2)),
+            Math.Min(Math.Max(PictureBox1.Location.Y + Velocity.Y, 0), Me.Size.Height - (PictureBox1.Size.Height * 2))
+        )
     End Sub
 
 End Class
